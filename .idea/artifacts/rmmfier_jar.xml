@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="rmmfier:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/rmmfier_jar</output-path>
+    <root id="archive" name="rmmfier.jar">
+      <element id="module-output" name="rmmfier" />
+    </root>
+  </artifact>
+</component>

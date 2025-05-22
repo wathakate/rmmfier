@@ -41,14 +41,16 @@ public class RMMUtils {
             Files.copy(filesTemp.get(i).toPath(), Paths.get(toWhere.toPath() + "/" + filesTemp.get(i).getName()));
         }
     }
-    public static String createProject(String path, String originalFolder,String name,ArrayList<String> folders) throws IOException {
+    public static String createProject(String path, String originalFolder,String name,ArrayList<String> foldersData000,ArrayList<String> rootFolder) throws IOException {
         new File(path+"/"+name).mkdirs();
         new File(path+"/"+name+"/data000").mkdirs();
-        for (int i = 0; i < folders.size(); i++) {
-            new File(path+"/"+name+"/data000/"+folders.get(i)).mkdirs();
-            System.out.println("made "+folders.get(i));
-            copyFiles(folders.get(i), originalFolder,path+"/"+name+"/data000/"+folders.get(i));
-            System.out.println("copied");
+        for (int i = 0; i < foldersData000.size(); i++) {
+            new File(path+"/"+name+"/data000/"+foldersData000.get(i)).mkdirs();
+            copyFiles(foldersData000.get(i), originalFolder,path+"/"+name+"/data000/"+foldersData000.get(i));
+        }
+        for (int i = 0; i < rootFolder.size(); i++) {
+            new File(path+"/"+name+"/data000/"+rootFolder.get(i)).mkdirs();
+            copyFiles(rootFolder.get(i), originalFolder,path+"/"+name+"/data000/"+rootFolder.get(i));
         }
         createModini(path+"/"+name,"lalilulelo","");
         return path+"/"+name+"/data000";
