@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Main {
+public class MainCLI {
     public static void main(String[] args) {
-        File source = new File("C:/Users/Lab5/Downloads/test");
+        File source = new File(args[0]);
 
         ArrayList<String> types = new ArrayList<>();
         if (!RMMUtils.getFilesByType("pl",source.getAbsolutePath()).isEmpty()){
@@ -20,7 +20,7 @@ public class Main {
         }
 
         try {
-            RMMUtils.createProject("C:/Users/Lab5/Downloads/",source.getAbsolutePath(), "test2",types);
+            RMMUtils.createProject(source.getParentFile().getAbsolutePath(),source.getAbsolutePath(), source.getName()+"_RMM",types);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
