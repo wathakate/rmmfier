@@ -53,20 +53,30 @@ public class RMMUtils {
         for (int i = 0; i < rootFolder.size(); i++) {
             copyFiles(rootFolder.get(i), originalFolder,path+"/"+name+"/");
         }
-        createModini(path+"/"+name,"lalilulelo","", searchDinput(path, name));
+        createModini(path+"/"+name,"lalilulelo", "");
         return path+"/"+name+"/data000";
     }
-    private static String searchDinput(String path, String name){
-        if (!getFilesByType("dinput", path+"/"+name).isEmpty()){
-            return getFilesByType("dinput", path+"/"+name).get(0).getName();
+    private static String[] searchDll(String path){
+        String[] dllArr;
+        ArrayList<File> dllList = getFilesByType(".asi", path+"/");
+
+        if (!dllList.isEmpty()){
+            dllArr = new String[dllList.size()];
+            for (int i = 0; i < dllList.size(); i++) {
+                dllArr[i] = dllList.get(i).getName();
+            }
+            return dllArr;
         } else {
-            return "";
+            dllArr = new String[]{""};
+            return dllArr;
         }
     }
-    public static void createModini(String path,String author, String description, String dinput) throws IOException {
+    public static void createModini(String path,String author, String description) throws IOException {
         Random ran = new Random();
         File modini = new File(path+"/mod.ini");
         BufferedWriter bw = new BufferedWriter(new FileWriter(modini.getAbsolutePath()));
+        String[] dllArr = searchDll(path);
+
         bw.write("[Main]");
         bw.newLine();
         bw.write("UpdateServer=\"\"");
@@ -81,7 +91,13 @@ public class RMMUtils {
         bw.newLine();
         bw.write("DependsCount=0");
         bw.newLine();
-        bw.write("DLLFile=\""+dinput+"\"");
+        bw.write("DLLFile=\"");
+        for (int i = 0; i < dllArr.length; i++) {
+            bw.write(dllArr[i]);
+            if (i < dllArr.length-1){
+                bw.write(",");
+            }
+        }
         bw.newLine();
         bw.write("CodeFile=\"\"");
         bw.newLine();
@@ -92,13 +108,14 @@ public class RMMUtils {
         bw.newLine();
         bw.write("Author=\""+author+"\"");
         bw.newLine();
-        bw.write("Title=\""+modini.getParent()+"\"");
+        bw.write("Title=\""+new File(modini.getParent()).getName()+"\"");
         bw.newLine();
         bw.write("Version=\"0.0.0\"");
         bw.newLine();
         bw.write("AuthorURL=\"\"");
         bw.newLine();
-        bw.write("Date=\"30/4/2009\"");
+        // Date doesn't really work but wgaf
+        bw.write("Date=\""+modini.lastModified()+"\"");
         bw.newLine();
         bw.write("Description=\""+description+"\"");
         bw.close();
