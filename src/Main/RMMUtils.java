@@ -24,12 +24,13 @@ public class RMMUtils {
         ArrayList<File> files = new ArrayList<>(list);
         File[] filesTemp = dir.listFiles();
         for (File file : filesTemp) {
-            if (file.isFile() && file.getName().contains(type)) {
+            if (file.isFile() && (file.getName().startsWith(type) || file.getName().endsWith(type))) {
                 files.add(file);
             } else if (file.isDirectory()) {
                 files.addAll(search(type,file,files));
             }
         }
+
         return files;
     }
     private static void copyFiles(String type,String fromFolder,String toFolder) throws IOException {
@@ -37,8 +38,9 @@ public class RMMUtils {
         ArrayList<File> filesTemp = getFilesByType(type,fromFolder);
 
         for (int i = 0; i < filesTemp.size();i++){
-            System.out.println(toWhere.toPath() + "/" + filesTemp.get(i).getName());
-            Files.copy(filesTemp.get(i).toPath(), Paths.get(toWhere.toPath() + "/" + filesTemp.get(i).getName()));
+            if (!new File(toWhere.toPath() + "/" + filesTemp.get(i).getName()).exists()) {
+                Files.copy(filesTemp.get(i).toPath(), Paths.get(toWhere.toPath() + "/" + filesTemp.get(i).getName()));
+            }
         }
     }
     public static String createProject(String path, String originalFolder,String name,ArrayList<String> foldersData000,ArrayList<String> rootFolder) throws IOException {
@@ -49,13 +51,19 @@ public class RMMUtils {
             copyFiles(foldersData000.get(i), originalFolder,path+"/"+name+"/data000/"+foldersData000.get(i));
         }
         for (int i = 0; i < rootFolder.size(); i++) {
-            new File(path+"/"+name+"/data000/"+rootFolder.get(i)).mkdirs();
-            copyFiles(rootFolder.get(i), originalFolder,path+"/"+name+"/data000/"+rootFolder.get(i));
+            copyFiles(rootFolder.get(i), originalFolder,path+"/"+name+"/");
         }
-        createModini(path+"/"+name,"lalilulelo","");
+        createModini(path+"/"+name,"lalilulelo","", searchDinput(path, name));
         return path+"/"+name+"/data000";
     }
-    public static void createModini(String path,String author, String description) throws IOException {
+    private static String searchDinput(String path, String name){
+        if (!getFilesByType("dinput", path+"/"+name).isEmpty()){
+            return getFilesByType("dinput", path+"/"+name).get(0).getName();
+        } else {
+            return "";
+        }
+    }
+    public static void createModini(String path,String author, String description, String dinput) throws IOException {
         Random ran = new Random();
         File modini = new File(path+"/mod.ini");
         BufferedWriter bw = new BufferedWriter(new FileWriter(modini.getAbsolutePath()));
@@ -73,7 +81,7 @@ public class RMMUtils {
         bw.newLine();
         bw.write("DependsCount=0");
         bw.newLine();
-        bw.write("DLLFile=\"\"");
+        bw.write("DLLFile=\""+dinput+"\"");
         bw.newLine();
         bw.write("CodeFile=\"\"");
         bw.newLine();
@@ -84,7 +92,7 @@ public class RMMUtils {
         bw.newLine();
         bw.write("Author=\""+author+"\"");
         bw.newLine();
-        bw.write("Title=\"Mod_RMM\"");
+        bw.write("Title=\""+modini.getParent()+"\"");
         bw.newLine();
         bw.write("Version=\"0.0.0\"");
         bw.newLine();

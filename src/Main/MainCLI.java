@@ -8,19 +8,22 @@ public class MainCLI {
     public static void main(String[] args) {
         File source = new File(args[0]);
 
+        // Files in Data000 (or any other data for that matter)
         ArrayList<String> typesData000 = new ArrayList<>();
+        String[] typesListData000 = {"pl", "em", "wp", "core", "it", "ba", "bh", "bm"};
+        // Files that are outside 000
         ArrayList<String> typesRoot = new ArrayList<>();
-        if (!RMMUtils.getFilesByType("pl",source.getAbsolutePath()).isEmpty()){
-            typesData000.add("pl");
+        String[] typesListRoot = {"shader", "Shader", ".asi", ".ini", ".dll"};
+
+        for (int i = 0; i <typesListData000.length; i++) {
+            if (!RMMUtils.getFilesByType(typesListData000[i],source.getAbsolutePath()).isEmpty()){
+                typesData000.add(typesListData000[i]);
+            }
         }
-        if (!RMMUtils.getFilesByType("em",source.getAbsolutePath()).isEmpty()){
-            typesData000.add("em");
-        }
-        if (!RMMUtils.getFilesByType("wp",source.getAbsolutePath()).isEmpty()){
-            typesData000.add("wp");
-        }
-        if (!RMMUtils.getFilesByType("shader",source.getAbsolutePath()).isEmpty()){
-            typesRoot.add("shader");
+        for (int i = 0; i <typesListRoot.length; i++) {
+            if (!RMMUtils.getFilesByType(typesListRoot[i],source.getAbsolutePath()).isEmpty()){
+                typesRoot.add(typesListRoot[i]);
+            }
         }
 
         try {
@@ -30,4 +33,5 @@ public class MainCLI {
         }
 
     }
+
 }
